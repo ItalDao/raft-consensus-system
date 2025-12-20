@@ -94,8 +94,8 @@ await node.append_entry({"command": "SET x=10"})
 
 ### Phase 1: Foundation (Current)
 - [x] Professional project structure
-- [ ] Node state machine (Follower, Candidate, Leader)
-- [ ] Persistent log storage system
+- [x] Node state machine (Follower, Candidate, Leader)
+- [x] Persistent log storage system
 
 ### Phase 2: Consensus Protocol
 - [ ] Leader election (RequestVote RPC)
