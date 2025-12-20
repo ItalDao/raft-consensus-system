@@ -98,7 +98,7 @@ await node.append_entry({"command": "SET x=10"})
 - [x] Persistent log storage system
 
 ### Phase 2: Consensus Protocol
-- [ ] Leader election (RequestVote RPC)
+- [x] Leader election (RequestVote RPC)
 - [ ] Log replication (AppendEntries RPC)
 - [ ] Heartbeat mechanism and timeout detection
 
