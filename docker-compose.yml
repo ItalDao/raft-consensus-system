@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  node1:
+    build: .
+    container_name: raft_node_1
+    environment:
+      - NODE_ID=1
+      - CLUSTER_SIZE=5
+      - NODE_PORT=8001
+    ports:
+      - "8001:8001"
+    networks:
+      - raft_network
+    volumes:
+      - ./data/node1:/app/data
+
+  node2:
+    build: .
+    container_name: raft_node_2
+    environment:
+      - NODE_ID=2
+      - CLUSTER_SIZE=5
+      - NODE_PORT=8002
+    ports:
+      - "8002:8002"
+    networks:
+      - raft_network
+    volumes:
+      - ./data/node2:/app/data
+
+  node3:
+    build: .
+    container_name: raft_node_3
+    environment:
+      - NODE_ID=3
+      - CLUSTER_SIZE=5
+      - NODE_PORT=8003
+    ports:
+      - "8003:8003"
+    networks:
+      - raft_network
+    volumes:
+      - ./data/node3:/app/data
+
+  node4:
+    build: .
+    container_name: raft_node_4
+    environment:
+      - NODE_ID=4
+      - CLUSTER_SIZE=5
+      - NODE_PORT=8004
+    ports:
+      - "8004:8004"
+    networks:
+      - raft_network
+    volumes:
+      - ./data/node4:/app/data
+
+  node5:
+    build: .
+    container_name: raft_node_5
+    environment:
+      - NODE_ID=5
+      - CLUSTER_SIZE=5
+      - NODE_PORT=8005
+    ports:
+      - "8005:8005"
+    networks:
+      - raft_network
+    volumes:
+      - ./data/node5:/app/data
+
+networks:
+  raft_network:
+    driver: bridge
