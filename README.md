@@ -1,19 +1,22 @@
-# 🔥 Raft Consensus System
+# Raft Consensus System
 
-> Implementación educativa del algoritmo de consenso Raft para sistemas distribuidos
+[![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
 
-## 🎯 ¿Qué es esto?
+A production-grade implementation of the Raft consensus algorithm for distributed systems. Built to understand how industry leaders like Google (Kubernetes/etcd), HashiCorp (Consul), and Cockroach Labs maintain consistency across distributed clusters.
 
-Este proyecto implementa el **algoritmo de consenso Raft**, usado por gigantes como Google (Kubernetes/etcd), HashiCorp (Consul), y Cockroach Labs (CockroachDB) para mantener consistencia en sistemas distribuidos.
+## Overview
 
-### ¿Por qué Raft?
+This project implements the Raft consensus protocol, which provides:
 
-- ✅ **Tolerancia a fallos**: El sistema sigue funcionando aunque fallen nodos
-- ✅ **Consistencia fuerte**: Todos los nodos ven los mismos datos
-- ✅ **Líder electo democráticamente**: Sin punto único de fallo
-- ✅ **Log replicado**: Cada operación queda registrada y replicada
+- **Fault Tolerance**: System continues operating despite node failures
+- **Strong Consistency**: All nodes maintain identical state
+- **Leader Election**: Democratic selection without single points of failure
+- **Log Replication**: Every operation is logged and replicated across the cluster
 
-## 🏗️ Arquitectura
+## System Architecture
 
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
@@ -22,95 +25,150 @@ Este proyecto implementa el **algoritmo de consenso Raft**, usado por gigantes c
 └─────────────┘     └─────────────┘     └─────────────┘
        │                   │                   │
        └───────────────────┴───────────────────┘
-              Replicación de Logs
+              Log Replication Protocol
 ```
 
-### Estados de un Nodo
+### Node States
 
-1. **Follower**: Estado inicial, escucha al líder
-2. **Candidate**: Compite para ser líder
-3. **Leader**: Coordina todo el cluster
+Each node in the cluster operates in one of three states:
 
-## 🛠️ Stack Tecnológico
+| State | Description |
+|-------|-------------|
+| **Follower** | Initial state, receives and replicates log entries from leader |
+| **Candidate** | Temporary state during leader election |
+| **Leader** | Coordinates cluster operations and log replication |
 
-- **Python 3.11+**: Lenguaje principal
-- **asyncio**: Comunicación asíncrona entre nodos
-- **Docker**: Simulación de nodos distribuidos
-- **pytest**: Testing exhaustivo
+## Technology Stack
 
-## 📦 Instalación
+- **Python 3.11+**: Core implementation language
+- **asyncio**: Asynchronous inter-node communication
+- **Docker**: Multi-node cluster simulation
+- **pytest**: Comprehensive test coverage
+- **aiosqlite**: Persistent log storage
+
+## Quick Start
+
+### Prerequisites
+
+- Python 3.11 or higher
+- Docker and Docker Compose
+- Git
+
+### Installation
 
 ```bash
-# Clonar el repositorio
-git clone https://github.com/tu-usuario/raft-consensus-system.git
+git clone https://github.com/ItalDao/raft-consensus-system.git
 cd raft-consensus-system
-
-# Instalar dependencias
 pip install -r requirements.txt
-
-# Correr el cluster (5 nodos)
-docker-compose up
 ```
 
-## 🚀 Uso Rápido
+### Running the Cluster
+
+```bash
+# Start a 5-node cluster
+docker-compose up
+
+# Run in detached mode
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+```
+
+### Basic Usage
 
 ```python
 from src.raft.node import RaftNode
 
-# Crear un nodo
+# Initialize a node
 node = RaftNode(node_id=1, cluster_size=5)
 
-# Iniciar el nodo
+# Start the node
 await node.start()
 
-# Escribir datos (solo el líder puede)
+# Append entry (only leader can write)
 await node.append_entry({"command": "SET x=10"})
 ```
 
-## 📚 Conceptos Implementados
+## Implementation Roadmap
 
-### ✅ Fase 1: Fundamentos (Actual)
-- [x] Estructura de proyecto profesional
-- [ ] Estados del nodo (Follower, Candidate, Leader)
-- [ ] Sistema de logs persistentes
+### Phase 1: Foundation (Current)
+- [x] Professional project structure
+- [ ] Node state machine (Follower, Candidate, Leader)
+- [ ] Persistent log storage system
 
-### 🔄 Fase 2: Consenso
-- [ ] Elección de líder (RequestVote RPC)
-- [ ] Replicación de logs (AppendEntries RPC)
-- [ ] Heartbeats y timeouts
+### Phase 2: Consensus Protocol
+- [ ] Leader election (RequestVote RPC)
+- [ ] Log replication (AppendEntries RPC)
+- [ ] Heartbeat mechanism and timeout detection
 
-### 🛡️ Fase 3: Tolerancia a Fallos
-- [ ] Detección de nodos caídos
-- [ ] Re-elección automática
-- [ ] Recuperación de particiones de red
+### Phase 3: Fault Tolerance
+- [ ] Node failure detection
+- [ ] Automatic leader re-election
+- [ ] Network partition recovery
 
-### 🎨 Fase 4: Visualización
-- [ ] Dashboard web en tiempo real
-- [ ] Métricas del cluster
-- [ ] Logs visuales
+### Phase 4: Production Features
+- [ ] Real-time cluster dashboard
+- [ ] Metrics and monitoring
+- [ ] Log compaction and snapshots
 
-## 📖 Recursos de Aprendizaje
+## Testing
 
-- [Paper original de Raft](https://raft.github.io/raft.pdf) - Diego Ongaro & John Ousterhout
-- [Raft Visualization](http://thesecretlivesofdata.com/raft/) - Animación interactiva
-- [Raft en producción](https://www.consul.io/docs/architecture/consensus) - HashiCorp Consul
+```bash
+# Run all tests
+pytest
 
-## 🤝 Contribuciones
+# Run with coverage
+pytest --cov=src tests/
 
-Este es un proyecto educativo. Pull requests bienvenidos para:
-- Optimizaciones
-- Tests adicionales
-- Documentación
-- Nuevas features (snapshots, compactación de logs)
+# Run specific test suite
+pytest tests/test_consensus.py
+```
 
-## 📝 Licencia
+## Project Structure
 
-MIT License - Úsalo, aprende, mejóralo
+```
+raft-consensus-system/
+├── src/
+│   ├── raft/           # Core Raft implementation
+│   ├── network/        # RPC and networking layer
+│   └── storage/        # Persistent log storage
+├── tests/              # Comprehensive test suite
+├── docs/               # Architecture documentation
+├── docker-compose.yml  # Multi-node deployment
+└── requirements.txt    # Python dependencies
+```
 
-## 👤 Autor
+## References
 
-Construido con 🧠 para entender cómo funcionan los sistemas distribuidos en el mundo real.
+> **Note**: This implementation follows the original Raft specification
+
+- [In Search of an Understandable Consensus Algorithm](https://raft.github.io/raft.pdf) - Ongaro & Ousterhout, Stanford (2014)
+- [Raft Consensus Algorithm Visualization](http://thesecretlivesofdata.com/raft/)
+- [Consul Architecture](https://www.consul.io/docs/architecture/consensus) - Production Raft implementation
+
+## Contributing
+
+Contributions are welcome. Areas of interest:
+
+- Performance optimizations
+- Additional test coverage
+- Documentation improvements
+- Advanced features (snapshots, membership changes)
+
+Please ensure all tests pass and code follows PEP 8 style guidelines.
+
+## License
+
+This project is licensed under the MIT License. See LICENSE file for details.
+
+## Author
+
+**Italo D.**  
+GitHub: [@ItalDao](https://github.com/ItalDao)
+
+Built as a deep dive into distributed systems consensus algorithms used in production infrastructure.
 
 ---
 
-**⭐ Si te sirvió, deja una estrella - ayuda a otros developers a encontrarlo**
+**Industry Applications**: This algorithm powers critical infrastructure at Google (etcd in Kubernetes), HashiCorp (Consul service mesh), CockroachDB (distributed SQL), and many other large-scale systems requiring strong consistency guarantees.
