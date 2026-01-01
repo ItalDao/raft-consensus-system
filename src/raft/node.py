@@ -166,11 +166,11 @@ class RaftNode:
                     vote_granted = True
                     self.voted_for = request.candidate_id
                     self._reset_election_timer()
-                    print(f"[Node {self.node_id}] ✅ Voté por Node {request.candidate_id}")
+                    print(f"[Node {self.node_id}]  Voté por Node {request.candidate_id}")
                 else:
-                    print(f"[Node {self.node_id}] ❌ Log desactualizado")
+                    print(f"[Node {self.node_id}]  Log desactualizado")
             else:
-                print(f"[Node {self.node_id}] ❌ Ya voté por Node {self.voted_for}")
+                print(f"[Node {self.node_id}]  Ya voté por Node {self.voted_for}")
         
         return RequestVoteResponse(
             term=self.current_term,
@@ -213,7 +213,7 @@ class RaftNode:
         
         # Si el term es menor al mío, rechazo
         if request.term < self.current_term:
-            print(f"[Node {self.node_id}] ❌ Rechacé AppendEntries de term viejo")
+            print(f"[Node {self.node_id}]  Rechacé AppendEntries de term viejo")
             return AppendEntriesResponse(
                 term=self.current_term,
                 success=False
@@ -221,7 +221,7 @@ class RaftNode:
         
         # Si es un heartbeat vacío
         if not request.entries:
-            print(f"[Node {self.node_id}] 💓 Heartbeat de Leader {request.leader_id}")
+            print(f"[Node {self.node_id}]  Heartbeat de Leader {request.leader_id}")
             return AppendEntriesResponse(
                 term=self.current_term,
                 success=True
@@ -231,7 +231,7 @@ class RaftNode:
         if request.prev_log_index > 0:
             # Debo tener esa entrada
             if request.prev_log_index > len(self.log):
-                print(f"[Node {self.node_id}] ❌ No tengo entrada en índice {request.prev_log_index}")
+                print(f"[Node {self.node_id}]  No tengo entrada en índice {request.prev_log_index}")
                 return AppendEntriesResponse(
                     term=self.current_term,
                     success=False
@@ -239,7 +239,7 @@ class RaftNode:
             
             # Y el term debe coincidir
             if self.log[request.prev_log_index - 1].term != request.prev_log_term:
-                print(f"[Node {self.node_id}] ❌ Conflicto en índice {request.prev_log_index}")
+                print(f"[Node {self.node_id}]  Conflicto en índice {request.prev_log_index}")
                 # Borro entradas conflictivas
                 self.log = self.log[:request.prev_log_index - 1]
                 return AppendEntriesResponse(
@@ -255,7 +255,7 @@ class RaftNode:
                 command=entry_dict['command']
             )
             self.log.append(entry)
-            print(f"[Node {self.node_id}] ✅ Replicé entrada: {entry.command}")
+            print(f"[Node {self.node_id}]  Replicé entrada: {entry.command}")
         
         # Actualizo mi commit index
         if request.leader_commit > self.commit_index:
@@ -285,7 +285,7 @@ class RaftNode:
             leader_commit=self.commit_index
         )
         
-        print(f"[Node {self.node_id}] 💓 Enviando heartbeats...")
+        print(f"[Node {self.node_id}]  Enviando heartbeats...")
         
         # En sistema real, enviaría a todos los nodos
         # Por ahora solo lo logueamos
@@ -302,13 +302,13 @@ class RaftNode:
             last_log_term=self.get_last_log_term()
         )
         
-        print(f"[Node {self.node_id}] 🗳️  Pidiendo votos para term {self.current_term}...")
+        print(f"[Node {self.node_id}]   Pidiendo votos para term {self.current_term}...")
         return request
         
     async def append_entry(self, command: Dict) -> bool:
         """Agrega una entrada al log (solo el líder puede)"""
         if self.state != NodeState.LEADER:
-            print(f"[Node {self.node_id}] ❌ No soy líder")
+            print(f"[Node {self.node_id}]  No soy líder")
             return False
             
         entry = LogEntry(
@@ -318,7 +318,7 @@ class RaftNode:
         )
         self.log.append(entry)
         
-        print(f"[Node {self.node_id}] ✅ Agregué: {command}")
+        print(f"[Node {self.node_id}]  Agregué: {command}")
         return True
     
     async def run(self):
@@ -329,7 +329,7 @@ class RaftNode:
         CANDIDATE: Espera votos, si timeout → re-elección
         LEADER: Envía heartbeats constantemente
         """
-        print(f"[Node {self.node_id}] 🚀 Iniciando loop principal...")
+        print(f"[Node {self.node_id}]  Iniciando loop principal...")
         
         while self.running:
             if self.state == NodeState.LEADER:
@@ -340,14 +340,14 @@ class RaftNode:
             elif self.state == NodeState.FOLLOWER:
                 # Soy follower: espero heartbeats
                 if self._has_election_timeout_elapsed():
-                    print(f"[Node {self.node_id}] ⏰ Timeout! Iniciando elección...")
+                    print(f"[Node {self.node_id}]  Timeout! Iniciando elección...")
                     await self.start_election()
                 await asyncio.sleep(0.1)  # Check cada 100ms
                 
             elif self.state == NodeState.CANDIDATE:
                 # Soy candidato: espero votos
                 if self._has_election_timeout_elapsed():
-                    print(f"[Node {self.node_id}] ⏰ Re-elección...")
+                    print(f"[Node {self.node_id}]  Re-elección...")
                     await self.start_election()
                 await asyncio.sleep(0.1)
         
@@ -368,7 +368,7 @@ class RaftNode:
         """Inicia el nodo"""
         self.running = True
         self._reset_election_timer()
-        print(f"[Node {self.node_id}] ✅ Iniciado como FOLLOWER")
+        print(f"[Node {self.node_id}]  Iniciado como FOLLOWER")
         
         # Inicia el loop principal
         asyncio.create_task(self.run())
@@ -376,4 +376,4 @@ class RaftNode:
     async def stop(self):
         """Detiene el nodo"""
         self.running = False
-        print(f"[Node {self.node_id}] ⏹️  Detenido")
+        print(f"[Node {self.node_id}]   Detenido")

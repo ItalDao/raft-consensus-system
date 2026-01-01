@@ -72,7 +72,7 @@ async def main():
     for i, cmd in enumerate(test_commands, 1):
         success = await nodes[0].append_entry(cmd)
         if success:
-            print(f"  ✅ Comando {i}: {cmd}")
+            print(f"   Comando {i}: {cmd}")
             
             # Replica a los followers
             for follower in nodes[1:]:
