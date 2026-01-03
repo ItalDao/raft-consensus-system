@@ -1,2 +1,26 @@
+# Core dependencies
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+pytest-aiohttp==1.0.5
+
+# Logging and monitoring
+structlog==23.2.0
+colorlog==6.8.0
+
+# Storage
+# Networking
+msgpack==1.0.7
+
+# Development
+black==23.12.1
+flake8==6.1.0
+mypy==1.7.1
+
+# Documentation
+mkdocs==1.5.3
+mkdocs-material==9.5.2
+
 aiosqlite==0.22.1
 aiohttp==3.9.1
