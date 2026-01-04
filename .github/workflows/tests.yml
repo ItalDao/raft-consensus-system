@@ -69,7 +69,30 @@ jobs:
     
     - name: Test Docker image
       run: |
+        # Inicia el contenedor
         docker run --name raft-test -d -p 8080:8080 raft-consensus:test
-        sleep 10
-        curl -f http://localhost:8080/api/status || exit 1
+        
+        # Espera a que el servidor esté listo (healthcheck necesita tiempo)
+        echo "Esperando a que el servidor inicie..."
+        sleep 15
+        
+        # Verifica que el contenedor esté corriendo
+        if ! docker ps | grep -q raft-test; then
+          echo "Error: El contenedor no está corriendo"
+          docker logs raft-test
+          exit 1
+        fi
+        
+        # Verifica el endpoint de status
+        echo "Verificando endpoint de status..."
+        if ! curl -f -s http://localhost:8080/api/status > /dev/null; then
+          echo "Error: El endpoint /api/status no responde"
+          docker logs raft-test
+          exit 1
+        fi
+        
+        echo " Docker test exitoso"
+        
+        # Limpieza
         docker stop raft-test
+        docker rm raft-test
