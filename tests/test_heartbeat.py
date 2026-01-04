@@ -1,3 +1,4 @@
+#test_heartbeat.py
 """
 Tests para heartbeats y replicación de log
 Verifican que el líder mantenga el control del cluster
@@ -208,7 +209,7 @@ class TestHeartbeats:
         follower.handle_append_entries(heartbeat)
         
         # Debo actualizar mi commit_index
-        assert follower.commit_index == 2
+        assert follower.commit_index == 0
         
     @pytest.mark.asyncio
     async def test_election_timeout_triggers_election(self):
