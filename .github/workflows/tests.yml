@@ -74,7 +74,7 @@ jobs:
         
         # Espera a que el servidor esté listo (healthcheck necesita tiempo)
         echo "Esperando a que el servidor inicie..."
-        sleep 15
+        sleep 30
         
         # Verifica que el contenedor esté corriendo
         if ! docker ps | grep -q raft-test; then

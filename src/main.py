@@ -48,7 +48,7 @@ class RaftCluster:
         self.web_server = RaftWebServer(self.nodes, port=8080)
         await self.web_server.start()
         
-        print(" Dashboard disponible en: http://localhost:8080")
+        print(" Dashboard disponible en: http://0.0.0.0:8080")
         print("\n Esperando elección de líder (algoritmo Raft)...")
         
         # Espera a que se elija un líder naturalmente

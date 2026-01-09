@@ -532,9 +532,9 @@ class RaftWebServer:
         """Inicia el servidor web"""
         runner = web.AppRunner(self.app)
         await runner.setup()
-        site = web.TCPSite(runner, 'localhost', self.port)
+        site = web.TCPSite(runner, '0.0.0.0', self.port)
         await site.start()
-        print(f" Dashboard disponible en: http://localhost:{self.port}")
+        print(f" Dashboard disponible en: http://0.0.0.0:{self.port}")
         
     async def stop(self):
         """Detiene el servidor web"""
